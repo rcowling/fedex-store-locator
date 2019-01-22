@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Display a map</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+    <script
+  src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+        .marker {
+  background-image: url('marker.png');
+  background-size: cover;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+    </style>
+</head>
+<body>
+
+<div id='map'></div>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoicG1hcnN0ZXIiLCJhIjoiY2pvMGV0eHhiMDAzMjN3cWloN2ZoemZqbSJ9.BD5MfCq12aN29vrDfKd7uw';
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/mapbox/streets-v9', // stylesheet location
+    center: [-74.50, 40], // starting position [lng, lat]
+    zoom: 9 // starting zoom
+});
+ map.on('load', function() {
+        $.ajax({
+          dataType: 'json',
+          url: 'https://kaiserco.co/api/fedex-hal/?zip=97230',
+          type: "GET",    
+          success: function(data) {             
+              console.log(data.origin_geo);
+            // add markers to map            
+            data.locations.forEach(function(marker) {
+                // get coordinates of each location and split the latlng
+                var coords = marker.geo.split(",");
+                console.log(coords[0], coords[1]);
+              // create a HTML element for each feature
+              var el = document.createElement('div');
+              el.className = 'marker';
+              // make a marker for each feature and add to the map
+              new mapboxgl.Marker(el)
+              .setLngLat([coords[1], coords[0]])
+              .addTo(map);
+            });
+          },
+          error:function() {
+              alert("Could not load the events");
+            },            
+        });
+      });
+       
+</script>
+
+</body>
+</html>
