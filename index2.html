@@ -80,6 +80,7 @@
           height:100%;
           overflow:auto;
           padding-bottom:60px;
+          padding-left: 40px;    
         }
 
         .listings .item {
@@ -103,12 +104,9 @@
           background-color:#f8f8f8;
         }
           
-        .listings .item .hours {
-          display:block;
-          border-bottom:1px solid #eee;
-          padding:10px;
-          text-decoration:none;
-        }  
+          
+          
+        
         ::-webkit-scrollbar {
           width:3px;
           height:3px;
@@ -122,33 +120,26 @@
           background:#00853e;
           border-radius:0;
         }
-          .marker {
-              
+        .marker {width:0; height:0;}
+
+.marker  span {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  box-sizing:border-box;
   width: 30px;
   height: 30px;
-                
-  border-radius: 50% 50% 50% 50%;
-  background: red;
-  display: inline-block;
-  
-              
-               
-  
-  
-  
-          }
-          
-          .marker::after {
-    content: attr(data-content);
-    color: white;          
-    transform: rotate(45deg);
-    width: 14px;
-    height: 14px;
-    margin: 11px 0 0 9px;
-    background: red;
-    position: absolute;
-    border-radius: 50%;
-          }
+  color:#fff;
+  background: #693;
+  border:solid 2px;
+  border-radius: 0 70% 70%;
+  box-shadow:0 0 2px #000;
+  cursor: pointer;
+  transform-origin:0 0;
+  transform: rotateZ(-135deg);
+}
+
+.marker b {transform: rotateZ(135deg)} 
     
        
 
@@ -215,6 +206,7 @@
           display: inline-block;
           width: 20%;              
         }
+          
       </style>
   </head>
 
@@ -253,7 +245,7 @@
           this.parentNode.removeChild(this);
       }
     };
-  }
+  }     
 
   mapboxgl.accessToken = 'pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2lqbmpqazdlMDBsdnRva284cWd3bm11byJ9.V6Hg2oYJwMAxeoR9GEzkAA';
 
@@ -269,14 +261,14 @@
     zoom: 13,
     scrollZoom: false
   });
+      
   // Open the modal on page load      
   $(window).on('load',function(){
     $('#myModal').modal('show');
   });
  
   // This adds the data to the map
-  map.on('load', function (e) {
-      
+  map.on('load', function (e) {    
     
   });
 
@@ -311,31 +303,50 @@
       var listing = listings.appendChild(document.createElement('div'));
         
       listing.className = 'item';
-      listing.id = "listing-" + i;        
+      listing.id = "listing-" + i; 
+     
         
       var link = listing.appendChild(document.createElement('a'));
       link.href = '#';
       link.className = 'title';
       link.dataPosition = i;
       link.innerHTML = '<b>' + currentFeature.company; + '</b>'
+      link.style.marginLeft = '30px'; 
 
       var address = listing.appendChild(document.createElement('div'));
       address.innerHTML = currentFeature.address;
+      address.style.marginLeft = '30px';    
         
+      var markerIcon = listing.appendChild(document.createElement('div'));
+      markerIcon.className = 'marker';
+      markerIcon.innerHTML = '<span><b>' + (i + 1) + '</b></span>';  
+          
       var csz = listing.appendChild(document.createElement('div'));
-      csz.innerHTML = currentFeature.csz;    
+      csz.innerHTML = currentFeature.csz;     
+      csz.style.marginLeft = '30px';    
       
-      /*var hours = listing.appendChild(document.createElement('div'));
-      hours.innerHTML = currentFeature.hours[0].days + ': ' + currentFeature.hours[0].hours;
-      hours.style.color = 'gray'; */ 
+      // error handling missing json objects    
+      if (currentFeature.hours[0] != null) {          
+          var hours = listing.appendChild(document.createElement('div'));
+          hours.innerHTML = '<h4>' + currentFeature.hours[0].days + ': ' + currentFeature.hours[0].hours; + '</h4>'
+          hours.style.color = 'gray';  
+          hours.style.marginLeft = '30px';
+      } else {
+          var hours = listing.appendChild(document.createElement('div'));
+          hours.innerHTML = 'Hours Not Available'
+          hours.style.color = 'gray';
+          hours.style.marginLeft = '30px';
+      }
       
       var shipbtn = listing.appendChild(document.createElement('div'));
-      shipbtn.innerHTML = '<button type="button" class="btn btn-primary" id="search-btn">Ship to this address</button>'
+      shipbtn.innerHTML = '<button type="button" class="btn btn-primary" id="search-btn">Ship to this address</button>'   
+      shipbtn.style.marginLeft = '30px';
+      
 
       link.addEventListener('click', function(e){
         // Update the currentFeature to the store associated with the clicked link
         var clickedListing = data.locations[this.dataPosition];
-
+        
         // 1. Fly to the point
         flyToStore(clickedListing);
 
@@ -356,7 +367,7 @@
       
   $( "#search-btn" ).click(function() {
       // Reset any of the listings on the sidebar
-     $('listings').innerHTML = "";      
+     document.getElementById('listings').innerHTML = "";      
      var zipcode = $('#search-box').val();      
     // This is where your '.addLayer()' used to be, instead add only the source without styling a layer
      $.ajax({
@@ -378,7 +389,8 @@
                 var el = document.createElement('div');
                 el.id = "marker-" + i;               
                 el.className = 'marker';
-                $('.marker').attr('data-content', i);
+                el.innerHTML = '<span><b>' + (i + 1) + '</b></span>'
+
                 // Add markers to the map at all points
                 new mapboxgl.Marker(el, {offset: [0, -23]})
                     .setLngLat([coords[1], coords[0]])
@@ -400,7 +412,8 @@
                     }
 
                     var listing = document.getElementById('listing-' + i);
-                    listing.classList.add('active');
+                    listing.classList.add('active');     
+                    
                     
                 });
               });
