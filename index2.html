@@ -32,7 +32,7 @@
 
         .sidebar {
           position:absolute;
-          width:33.3333%;
+          width:20%;
           height:100%;
           top:0;left:0;
           overflow:hidden;
@@ -44,10 +44,11 @@
 
         .map {
           position:absolute;
-          left:33.3333%;
-          width:66.6666%;
+          left:20%;
+          width:80%;
           top:0;bottom:0;
-        }
+        } 
+          
 
         h1 {
           font-size:22px;
@@ -58,7 +59,7 @@
         }
 
         a {
-          color:#404040;
+          color:black;
           text-decoration:none;
         }
 
@@ -80,7 +81,7 @@
           height:100%;
           overflow:auto;
           padding-bottom:60px;
-          padding-left: 40px;    
+          padding-left: 8px;    
         }
 
         .listings .item {
@@ -93,19 +94,21 @@
         .listings .item:last-child { border-bottom:none; }
         .listings .item .title {
           display:block;
-          color:#00853e;
+          color:black;
           font-weight:700;
         }
 
         .listings .item .title small { font-weight:400; }
         .listings .item.active .title,
-        .listings .item .title:hover { color:#8cc63f; }
+        .listings .item .title:hover { color:black; }
         .listings .item.active {
           background-color:#f8f8f8;
-        }
+        }        
           
-          
-          
+        .modal-full {
+          min-width: 50%;
+          margin: 0;
+        }    
         
         ::-webkit-scrollbar {
           width:3px;
@@ -117,31 +120,50 @@
           background:none;
         }
         ::-webkit-scrollbar-thumb {
-          background:#00853e;
+          background:#D32132;
           border-radius:0;
         }
         .marker {width:0; height:0;}
 
-.marker  span {
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  box-sizing:border-box;
-  width: 30px;
-  height: 30px;
-  color:#fff;
-  background: #693;
-  border:solid 2px;
-  border-radius: 0 70% 70%;
-  box-shadow:0 0 2px #000;
-  cursor: pointer;
-  transform-origin:0 0;
-  transform: rotateZ(-135deg);
-}
+        .marker  span {
+          display:flex;
+          justify-content:center;
+          align-items:center;
+          box-sizing:border-box;
+          width: 30px;
+          height: 30px;
+          color:#fff;
+          background: #D32132;
+          border:solid 2px;
+          border-radius: 0 70% 70%;
+          box-shadow:0 0 2px #000;
+          cursor: pointer;
+          transform-origin:0 0;
+          transform: rotateZ(-135deg);
+        }
 
-.marker b {transform: rotateZ(135deg)} 
-    
-       
+        .marker b {transform: rotateZ(135deg)}   
+          
+        .marker2 {width:0; height:0;}
+
+        .marker2  span {
+          display:flex;
+          justify-content:center;
+          align-items:center;
+          box-sizing:border-box;
+          width: 30px;
+          height: 30px;
+          color:#fff;
+          background: #FFF;
+          border:solid 2px;
+          border-radius: 0 70% 70%;
+          box-shadow:0 0 2px #000;
+          cursor: pointer;
+          transform-origin:0 0;
+          transform: rotateZ(-135deg);
+        }
+
+        .marker2 b {transform: rotateZ(135deg)}  
 
         .clearfix { display:block; }
         .clearfix:after {
@@ -162,7 +184,7 @@
         }
         .mapboxgl-popup-content {
           font:400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
-          padding:0;
+          padding:5px;
           width:180px;
         }
         .mapboxgl-popup-content-wrapper {
@@ -203,38 +225,43 @@
         }
         .form-control {
           margin-right: 10px;
+          margin-left: 10px;    
           display: inline-block;
-          width: 20%;              
+          width: 10%;              
         }
+          
+       .close {
+         font-size: 2rem;
+       }  
           
       </style>
   </head>
 
   <body>
-      
+
     <div class="modal" tabindex="-1" role="dialog" id="myModal" data-backdrop="false">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-full" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+      <div class="modal-header" hidden="true">       
       </div>
       <div class="modal-body">
-          <p><b><h4>Find Pickup Location Near:</h4></b><input type="text" class="form-control" id="search-box" placeholder="Zip Code" value="97230" aria-label="Zip code" aria-describedby="basic-addon2"><button type="button" class="btn btn-primary" id="search-btn">Search</button></p>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+          <img src="marker.png" style="width: 30.3px; height: 44.6px;">
+          <div id="modaltext" style="display: inline-block"><p><h4>Find a Pickup Location Near:</h4></div><input type="text" class="form-control" id="search-box" placeholder="Zip Code" value="97230" aria-label="Zip code" aria-describedby="basic-addon2"><button type="button" class="btn btn-danger" id="search-btn" style="background-color: #D32132; display: inline-block;">Search</button>
+          <br><br><b>Select a location to pickup from. You'll recieve an email when your order arrives and have 5 days to pick it up.</b> 
       </div>
-      <div class="modal-footer">
-        <b>Select a location to pickup from. You'll recieve an email when your order arrives and have 5 days to pick it up.</b>         
+      <div class="modal-footer">          
+          <img src="fedex.png" style="width: 78px; height: 25.5px;"><img src="walgreens.png" style="width: 120px; height: 60px; padding-right: 10px;"> Don't worry about being home to sign! Over 10,000 locations across the U.S.
       </div>
     </div>
   </div>
 </div>  
       
-    <div class='sidebar'>
-      
+    <div class='sidebar'>      
     <div id='listings' class='listings'></div>
-    </div>
+    </div>      
     <div id='map' class='map'> </div>
 
   <script>
@@ -286,25 +313,23 @@
     if (popUps[0]) popUps[0].remove();
 
 
-    var popup = new mapboxgl.Popup({closeOnClick: false})
+    var popup = new mapboxgl.Popup({closeOnClick: true, offset:[0,-12]})
           .setLngLat([coords[1], coords[0]])
-          .setHTML('<h3>Sweetgreen</h3>' +
-            '<h4>' + currentFeature.address + '</h4>')
+          .setHTML('<b>' + currentFeature.company + '</b>' +
+            '<br>' + currentFeature.address + '<br>' + currentFeature.csz)
           .addTo(map);
   }
 
   function buildLocationList(data) {
     for (i = 0; i < data.locations.length; i++) {
       var currentFeature = data.locations[i];
-      var prop = currentFeature.locations;
-        
+      var prop = currentFeature.locations;        
              
       var listings = document.getElementById('listings');
       var listing = listings.appendChild(document.createElement('div'));
         
       listing.className = 'item';
-      listing.id = "listing-" + i; 
-     
+      listing.id = "listing-" + i;      
         
       var link = listing.appendChild(document.createElement('a'));
       link.href = '#';
@@ -339,13 +364,12 @@
       }
       
       var shipbtn = listing.appendChild(document.createElement('div'));
-      shipbtn.innerHTML = '<button type="button" class="btn btn-primary" id="search-btn">Ship to this address</button>'   
-      shipbtn.style.marginLeft = '30px';
-      
+      shipbtn.innerHTML = '<button type="button" class="btn btn-outline-primary" id="ship-btn">Ship to this location</button>'   
+      shipbtn.style.marginLeft = '30px';      
 
       link.addEventListener('click', function(e){
         // Update the currentFeature to the store associated with the clicked link
-        var clickedListing = data.locations[this.dataPosition];
+        var clickedListing = data.locations[this.dataPosition];        
         
         // 1. Fly to the point
         flyToStore(clickedListing);
@@ -397,14 +421,18 @@
                     .addTo(map);
               
                 el.addEventListener('click', function(e){
+                    el.className = 'marker';
                     // 1. Fly to the point
-                    flyToStore(marker);
-
+                    flyToStore(marker);                   
+                         
                     // 2. Close all other popups and display popup for clicked store
                     createPopUp(marker);
 
                     // 3. Highlight listing in sidebar (and remove highlight for all other listings)
                     var activeItem = document.getElementsByClassName('active');
+                    
+                    // 4. Change the marker to a different color
+                    el.className = 'marker2';
 
                     e.stopPropagation();
                     if (activeItem[0]) {
@@ -412,9 +440,7 @@
                     }
 
                     var listing = document.getElementById('listing-' + i);
-                    listing.classList.add('active');     
-                    
-                    
+                    listing.classList.add('active');                         
                 });
               });
           },
