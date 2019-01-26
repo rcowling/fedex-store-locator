@@ -100,15 +100,25 @@
 
         .listings .item .title small { font-weight:400; }
         .listings .item.active .title,
-        .listings .item .title:hover { color:black; }
+        .listings .item .title:hover { color:#D32132; }
         .listings .item.active {
-          background-color:#f8f8f8;
+          background-color:#f2f2f2;
         }        
           
         .modal-full {
-          min-width: 50%;
+          min-width: 60%;
           margin: 0;
-        }    
+        }
+        
+      .modal-body {
+          display: block;
+          text-align: center;
+      } 
+
+      .modal-footer {
+          display: block;
+          text-align: center;
+      } 
         
         ::-webkit-scrollbar {
           width:3px;
@@ -187,42 +197,7 @@
           padding:5px;
           width:180px;
         }
-        .mapboxgl-popup-content-wrapper {
-          padding:1%;
-        }
-        .mapboxgl-popup-content h3 {
-          background:#91c949;
-          color:#fff;
-          margin:0;
-          display:block;
-          padding:10px;
-          border-radius:3px 3px 0 0;
-          font-weight:700;
-          margin-top:-15px;
-        }
-
-        .mapboxgl-popup-content h4 {
-          margin:0;
-          display:block;
-          padding: 10px 10px 10px 10px;
-          font-weight:400;
-        }
-
-        .mapboxgl-popup-content div {
-          padding:10px;
-        }
-
-        .mapboxgl-container .leaflet-marker-icon {
-          cursor:pointer;
-        }
-
-        .mapboxgl-popup-anchor-top > .mapboxgl-popup-content {
-          margin-top: 15px;
-        }
-
-        .mapboxgl-popup-anchor-top > .mapboxgl-popup-tip {
-          border-bottom-color: #91c949;
-        }
+        
         .form-control {
           margin-right: 10px;
           margin-left: 10px;    
@@ -238,13 +213,12 @@
   </head>
 
   <body>
-
     <div class="modal" tabindex="-1" role="dialog" id="myModal" data-backdrop="false">
   <div class="modal-dialog modal-full" role="document">
     <div class="modal-content">
       <div class="modal-header" hidden="true">       
       </div>
-      <div class="modal-body">
+      <div class="modal-body d-block">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -379,7 +353,7 @@
 
         // 3. Highlight listing in sidebar (and remove highlight for all other listings)
         var activeItem = document.getElementsByClassName('active');
-
+            
         if (activeItem[0]) {
            activeItem[0].classList.remove('active');
         }
@@ -390,10 +364,12 @@
   }
       
   $( "#search-btn" ).click(function() {
-      // Reset any of the listings on the sidebar
+     // Hide the modal footer
+     $('.modal-footer').hide();
+     // Reset any of the listings on the sidebar
      document.getElementById('listings').innerHTML = "";      
      var zipcode = $('#search-box').val();      
-    // This is where your '.addLayer()' used to be, instead add only the source without styling a layer
+     // Load the data from the api via ajax
      $.ajax({
           dataType: 'json',
           url: 'https://kaiserco.co/api/fedex-hal/?zip=' + zipcode,
@@ -420,8 +396,7 @@
                     .setLngLat([coords[1], coords[0]])
                     .addTo(map);
               
-                el.addEventListener('click', function(e){
-                    el.className = 'marker';
+                el.addEventListener('click', function(e){                  
                     // 1. Fly to the point
                     flyToStore(marker);                   
                          
@@ -440,7 +415,10 @@
                     }
 
                     var listing = document.getElementById('listing-' + i);
-                    listing.classList.add('active');                         
+                    listing.classList.add('active'); 
+                    
+                    // scroll to the active element on the sidebar    
+                    listing.scrollIntoView(); 
                 });
               });
           },
