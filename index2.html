@@ -37,6 +37,7 @@
           top:0;left:0;
           overflow:hidden;
           border-right:1px solid rgba(0,0,0,0.25);
+          padding-top: 132.88px;    
         }
         .pad2 {
           padding:20px;
@@ -47,8 +48,8 @@
           left:20%;
           width:80%;
           top:0;bottom:0;
-        } 
-          
+          margin-top: 132.88px;           
+        }           
 
         h1 {
           font-size:22px;
@@ -106,7 +107,7 @@
         }        
           
         .modal-full {
-          min-width: 60%;
+          min-width: 100%;
           margin: 0;
         }
         
@@ -208,6 +209,29 @@
        .close {
          font-size: 2rem;
        }  
+         
+          
+       .navbar {
+         min-height: 132.88px;
+        padding: 0 !important; 
+          border-bottom:1px solid rgba(0,0,0,0.25); 
+           z-index: 2 !important;
+       }
+
+    .navbar-brand {
+      
+      height: 132.88px;
+      line-height: 132.88px;
+        
+    }  
+          .modal-backdrop {
+  display: none !important;
+}
+.modal-open .modal {
+    height: 128.88px;
+    margin: 0 auto;
+}
+          
           
       </style>
   </head>
@@ -232,7 +256,20 @@
     </div>
   </div>
 </div>  
-      
+    
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">e-commerce site</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="#" onclick="$('#myModal').modal('show');">Find store locations <span class="sr-only">(current)</span></a>
+      </li>      
+    </ul>
+  </div>
+</nav>    
     <div class='sidebar'>      
     <div id='listings' class='listings'></div>
     </div>      
@@ -263,11 +300,20 @@
     scrollZoom: false
   });
       
+  // Add zoom and rotation controls to the map.
+  map.addControl(new mapboxgl.NavigationControl());      
+      
   // Open the modal on page load      
   $(window).on('load',function(){
     $('#myModal').modal('show');
   });
- 
+      
+   // Clicking the ship button closes the modal      
+   $( "#ship-btn" ).click(function() {
+     // Hide the modal footer
+     $('#myModal').show();
+   });
+       
   // This adds the data to the map
   map.on('load', function (e) {    
     
@@ -362,7 +408,7 @@
       });
     }
   }
-      
+        
   $( "#search-btn" ).click(function() {
      // Hide the modal footer
      $('.modal-footer').hide();
