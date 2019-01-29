@@ -166,7 +166,7 @@
           box-sizing:border-box;
           width: 30px;
           height: 30px;
-          color:#fff;
+          color:#000;
           background: #FFF;
           border:solid 2px;
           border-radius: 0 70% 70%;
@@ -214,9 +214,9 @@
           
        .navbar {
          min-height: 10vh;
-        padding: 0 !important; 
-          border-bottom:1px solid rgba(0,0,0,0.25); 
-           z-index: 2 !important;
+         padding: 0 !important; 
+         border-bottom:1px solid rgba(0,0,0,0.25); 
+         z-index: 2 !important;
        }
 
        .navbar-brand {
@@ -232,8 +232,7 @@
          margin: 0 auto;
         }
           
-      #modaltext {
-         
+      #modaltext {         
          display: none;
       } 
 
@@ -243,6 +242,10 @@
       #tagline {
          display: none;
       }
+      h5 {
+         color: gray;
+         font-size: 20px;
+      }      
           
       @media only screen and (min-width: 992px) {
           body {
@@ -381,7 +384,7 @@
           box-sizing:border-box;
           width: 30px;
           height: 30px;
-          color:#fff;
+          color:#000;
           background: #FFF;
           border:solid 2px;
           border-radius: 0 70% 70%;
@@ -454,8 +457,14 @@
       #tagline {
          display: block;
       }
+          h5 {
+              color: gray;
+              font-size: 20px;
+          }      
           
-      }       
+      } 
+          
+          
           
           
       </style>
@@ -564,14 +573,17 @@
       link.dataPosition = i;
       link.innerHTML = '<b>' + currentFeature.company; + '</b>'
       link.style.marginLeft = '30px'; 
+    
+      var markerIcon = listing.appendChild(document.createElement('div'));
+      markerIcon.setAttribute("id", "Div1");    
+      markerIcon.className = 'marker';
+      markerIcon.innerHTML = '<span><b>' + (i + 1) + '</b></span>';
+      markerIcon.style.position = 'relative';
+      markerIcon.style.top = '15px';
 
       var address = listing.appendChild(document.createElement('div'));
       address.innerHTML = currentFeature.address;
-      address.style.marginLeft = '30px';    
-        
-      var markerIcon = listing.appendChild(document.createElement('div'));
-      markerIcon.className = 'marker';
-      markerIcon.innerHTML = '<span><b>' + (i + 1) + '</b></span>';  
+      address.style.marginLeft = '30px';           
           
       var csz = listing.appendChild(document.createElement('div'));
       csz.innerHTML = currentFeature.csz;     
@@ -580,13 +592,11 @@
       // error handling missing json objects    
       if (currentFeature.hours[0] != null) {          
           var hours = listing.appendChild(document.createElement('div'));
-          hours.innerHTML = '<h4>' + currentFeature.hours[0].days + ': ' + currentFeature.hours[0].hours; + '</h4>'
-          hours.style.color = 'gray';  
+          hours.innerHTML = '<h5>' + currentFeature.hours[0].days + ': ' + currentFeature.hours[0].hours; + '</h5>'          
           hours.style.marginLeft = '30px';
       } else {
           var hours = listing.appendChild(document.createElement('div'));
-          hours.innerHTML = 'Hours Not Available'
-          hours.style.color = 'gray';
+          hours.innerHTML = '<h5>Hours Not Available</h5>'          
           hours.style.marginLeft = '30px';
       }
       
@@ -594,8 +604,8 @@
       shipbtn.innerHTML = '<button type="button" class="btn btn-outline-primary" id="ship-btn" onclick="shipToLocation();">Ship to this location</button>'   
       shipbtn.style.marginLeft = '30px';      
 
-      link.addEventListener('click', function(e){
-          
+      link.addEventListener('click', function(e){         
+        
         // Update the currentFeature to the store associated with the clicked link
         var clickedListing = data.locations[this.dataPosition];        
         
@@ -607,6 +617,8 @@
 
         // 3. Highlight listing in sidebar (and remove highlight for all other listings)
         var activeItem = document.getElementsByClassName('active');
+        // 4. Change the color of the marker  
+         
             
         if (activeItem[0]) {
            activeItem[0].classList.remove('active');
@@ -650,10 +662,17 @@
                     .setLngLat([coords[1], coords[0]])
                     .addTo(map);
               
-                el.addEventListener('click', function(e){                  
-                    // 1. Fly to the point
-                    flyToStore(marker);                   
-                         
+                el.addEventListener('click', function(e){  
+                    // Reset the marker back to its original color
+                    var x = document.getElementsByClassName("marker2");
+                    var j;
+                    for (j = 0; j < x.length; j++) {
+                      x[j].className = "marker"; // set "marker" as the class for each of those elements
+                    }
+                    
+                    // 1. Fly to the point. Can use this if you want, will zoom to the clicked marker. 
+                    //flyToStore(marker);                   
+                       
                     // 2. Close all other popups and display popup for clicked store
                     createPopUp(marker);
 
@@ -661,8 +680,8 @@
                     var activeItem = document.getElementsByClassName('active');
                     
                     // 4. Change the marker to a different color
-                    el.className = 'marker2';
-
+                    this.className = 'marker2';
+                    //$("#Div1").attr('class', 'marker2');
                     e.stopPropagation();
                     if (activeItem[0]) {
                        activeItem[0].classList.remove('active');
