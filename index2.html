@@ -104,9 +104,35 @@
         .listings .item.active .title,
         .listings .item .title:hover { color:#D32132; }
         .listings .item.active {
-          background-color:#f2f2f2;
-        }        
+          background-color:#fff;
+        }            
           
+        .listings .item .markerIcon {width:0; height:0;}
+
+        .listings .item .markerIcon  span {
+          display:flex;
+          justify-content:center;
+          align-items:center;
+          box-sizing:border-box;
+          width: 30px;
+          height: 30px;
+          color:#fff;
+          background: #D32132;
+          border:solid 2px;
+          border-radius: 0 70% 70%;
+          box-shadow:0 0 2px #000;
+          cursor: pointer;
+          transform-origin:0 0;
+          transform: rotateZ(-135deg);
+        }
+
+        .listings .item .markerIcon b {transform: rotateZ(135deg)}
+          
+        .listings .item.active .markerIcon span {             
+          color:black;
+          background: #FFF;          
+          }            
+       
         .modal-full {
           min-width: 100%;                
           margin: 0;
@@ -230,7 +256,7 @@
        .modal-open .modal {
          height: 128.88px;
          margin: 0 auto;
-        }
+       }
           
       #modaltext {         
          display: none;
@@ -325,7 +351,7 @@
         .listings .item.active .title,
         .listings .item .title:hover { color:#D32132; }
         .listings .item.active {
-          background-color:#f2f2f2;
+          background-color:#fff;
         }        
           
         .modal-full {
@@ -424,8 +450,7 @@
           
        .close {
          font-size: 2rem;
-       }  
-         
+       }          
           
        .navbar {
          min-height: 132.88px;
@@ -433,23 +458,23 @@
           border-bottom:1px solid rgba(0,0,0,0.25); 
            z-index: 2 !important;
        }
-    .navbar-brand {
-      
-      height: 132.88px;
-      line-height: 132.88px;
-        
-    }  
-          .modal-backdrop {
-  display: none !important;
-}
-.modal-open .modal {
-    height: auto;
-    margin: 0 auto;
-}
-           #modaltext {
-         display: inline-block;
-         
-      } 
+          
+       .navbar-brand {      
+         height: 132.88px;
+         line-height: 132.88px;        
+       }  
+       .modal-backdrop {
+          display: none !important;
+       }
+          
+       .modal-open .modal {
+          height: auto;
+          margin: 0 auto;
+        }
+          
+        #modaltext {
+         display: inline-block;         
+        } 
 
       #mrkimage {
          display: inline-block;
@@ -457,15 +482,11 @@
       #tagline {
          display: block;
       }
-          h5 {
-              color: gray;
-              font-size: 20px;
-          }      
-          
-      } 
-          
-          
-          
+      h5 {
+          color: gray;
+          font-size: 20px;
+      }           
+    } 
           
       </style>
   </head>
@@ -542,18 +563,46 @@
         zoom: 15
       });
   }
+      
+  function createMarker(currentFeature, itemid) {
+    // If there is already a marker on the map, remove it  
+    $( ".marker2" ).remove();
+    // create DOM element for the marker
+    // This marker is only used for changing the marker
+    // with a sidebar link click
+    var coords = currentFeature.geo.split(","); 
+    var el2 = document.createElement('div');
+    //console.log(listing.id);
+    el2.className = 'marker2';
+    el2.innerHTML = '<span><b>' + (parseInt(itemid) + 1) + '</b></span>'
+    // create the marker
+    var mkr = new mapboxgl.Marker(el2, {offset: [0, -23]})
+    .setLngLat([coords[1], coords[0]])
+    //.setPopup(popup) // sets a popup on this marker
+    .addTo(map);    
+  }      
 
   function createPopUp(currentFeature) {
     var coords = currentFeature.geo.split(",");  
     var popUps = document.getElementsByClassName('mapboxgl-popup');
     if (popUps[0]) popUps[0].remove();
-
-
-    var popup = new mapboxgl.Popup({closeOnClick: true, offset:[0,-12]})
+        
+    if (currentFeature.hours[0] != null) {
+        var popup = new mapboxgl.Popup({closeOnClick: true, offset:[0,-12]})
           .setLngLat([coords[1], coords[0]])
           .setHTML('<b>' + currentFeature.company + '</b>' +
-            '<br>' + currentFeature.address + '<br>' + currentFeature.csz)
+            '<br>' + currentFeature.address + '<br>' + currentFeature.csz +
+            '<br>' + currentFeature.hours[0].days + ": " + currentFeature.hours[0].hours)
           .addTo(map);
+          
+      } else {
+          var popup = new mapboxgl.Popup({closeOnClick: true, offset:[0,-12]})
+          .setLngLat([coords[1], coords[0]])
+          .setHTML('<b>' + currentFeature.company + '</b>' +
+            '<br>' + currentFeature.address + '<br>' + currentFeature.csz +
+            '<br>' + 'Hours Not Available')
+          .addTo(map);
+      }      
   }
 
   function buildLocationList(data) {
@@ -576,7 +625,7 @@
     
       var markerIcon = listing.appendChild(document.createElement('div'));
       markerIcon.setAttribute("id", "Div1");    
-      markerIcon.className = 'marker';
+      markerIcon.className = 'markerIcon';
       markerIcon.innerHTML = '<span><b>' + (i + 1) + '</b></span>';
       markerIcon.style.position = 'relative';
       markerIcon.style.top = '15px';
@@ -619,12 +668,16 @@
         var activeItem = document.getElementsByClassName('active');
         // 4. Change the color of the marker  
          
+         // console.log(activeItem[0]);
             
         if (activeItem[0]) {
            activeItem[0].classList.remove('active');
         }
         this.parentNode.classList.add('active');
-
+          console.log(activeItem[0].id);
+          var itemid = activeItem[0].id.split("-");
+          
+          createMarker(clickedListing, itemid[1]);
       });
     }
   }
@@ -662,7 +715,8 @@
                     .setLngLat([coords[1], coords[0]])
                     .addTo(map);
               
-                el.addEventListener('click', function(e){  
+                el.addEventListener('click', function(e){ 
+                    $( ".marker2" ).remove();
                     // Reset the marker back to its original color
                     var x = document.getElementsByClassName("marker2");
                     var j;
@@ -681,7 +735,7 @@
                     
                     // 4. Change the marker to a different color
                     this.className = 'marker2';
-                    //$("#Div1").attr('class', 'marker2');
+                    
                     e.stopPropagation();
                     if (activeItem[0]) {
                        activeItem[0].classList.remove('active');
@@ -692,7 +746,7 @@
                     
                     // scroll to the active element on the sidebar    
                     listing.scrollIntoView(); 
-                });
+                });                
               });
           },
           error:function() {
