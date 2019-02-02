@@ -552,6 +552,22 @@
       
      
   <script>
+      
+    // Allow the users to press enter to execute the search button  
+    // Get the input field
+    var input = document.getElementById("search-box");
+
+    // Execute a function when the user releases a key on the keyboard
+    input.addEventListener("keyup", function(event) {
+      // Cancel the default action, if needed
+      event.preventDefault();
+      // Number 13 is the "Enter" key on the keyboard
+      if (event.keyCode === 13) {
+        // Trigger the button element with a click
+        document.getElementById("search-btn").click();
+      }
+    }); 
+      
   // This will let you use the .remove() function later on
   if (!('remove' in Element.prototype)) {
     Element.prototype.remove = function() {
@@ -570,9 +586,9 @@
     // style URL
     style: 'mapbox://styles/mapbox/streets-v9',
     // initial position in [long, lat] format
-    center: [-77.034084142948, 38.909671288923],
+    center: [-98.5795, 39.8283],
     // initial zoom
-    zoom: 13,
+    zoom: 2,
     scrollZoom: false
   });
       
@@ -735,11 +751,21 @@
           success: function(data) { 
               buildLocationList(data); 
               // Move the map to the coordinates of the input
-              var zipCoords = data.origin_geo.split(',');
+              /*var zipCoords = data.origin_geo.split(',');
+              
               map.jumpTo({
                 center: [zipCoords[1], zipCoords[0]],
                 zoom: 10
+              });*/
+              var zipCoords = data.locations[0].geo.split(',');              
+              
+              map.flyTo({
+                center: [zipCoords[1], zipCoords[0]],
+                zoom: 14,
+                speed: 1.5,
+                curve: 1,  
               });
+              
             // add markers to map            
             data.locations.forEach(function(marker, i) {
                 var coords = marker.geo.split(",");
